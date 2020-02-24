@@ -22,10 +22,13 @@ class SnakeGame():
         self.startTime = time()
 
 
-    def endGame(self, message):
+    def endGame(self, message, debug = None):
         print(message)
         print(f"You survived {round(time()-self.startTime,2)} seconds")
         print(f"And scored {self.points} points.")
+        
+        if debug != None:
+            print(debug)
 
     def game(self, screen):
 
@@ -83,6 +86,10 @@ class SnakeGame():
 
             # Add some content to scoreboard
             score.addstr(1,1,f"Points: {self.points}")
+
+            # Debug information displayed at score window
+            score.addstr(1, int(self.screenWidth/3), f"Max Y {self.screenHeigth-1}, current head position:  {snake[0][0]}")
+            score.addstr(2, int(self.screenWidth/3), f"Max X {self.screenWidth-1}, current head position:  {snake[0][1]}")
             scoreUpdate = score.refresh()
 
             # Updating the timeout value
@@ -101,11 +108,11 @@ class SnakeGame():
             # snake[0][0] = Y, snake[0][1] = X
             if snake[0][0] in [0, self.screenHeigth-1] or snake[0][1] in [0, self.screenWidth-1]:
                 curses.endwin()
-                self.endGame("Snake hit the wall!")
+                self.endGame("Snake hit the wall!", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}")
                 break
             elif snake[0] in snake[1:]:
                 curses.endwin()
-                self.endGame("Cannibalism is not good.")
+                self.endGame("Cannibalism is not good.", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}")
                 break
 
             # Add a block towards new direction
