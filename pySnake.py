@@ -57,8 +57,8 @@ class SnakeGame():
         game.timeout(self.speed)
 
         # Setting starting coordinates for snake
-        y_position = self.screenHeigth / 2
-        x_position = self.screenWidth / 4
+        y_position = int(self.screenHeigth / 2)
+        x_position = int(self.screenWidth / 4)
 
         # Creating a list holding the snake
         # Giving the snake 3 blocks, snake[0][0] will always be the snake head and the rest will come behind.
@@ -69,7 +69,7 @@ class SnakeGame():
         ]
 
         # Creating the first food in the scene and paint it to canvas.
-        food = [self.screenHeigth / 2, self.screenWidth / 2]
+        food = [int(self.screenHeigth / 2), int(self.screenWidth / 2)]
         game.addch(int(food[0]), int(food[1]), "o")
 
         # Set the default starting direction
@@ -86,10 +86,11 @@ class SnakeGame():
 
             # Add some content to scoreboard
             score.addstr(1,1,f"Points: {self.points}")
+            score.addstr(2,1,f"Next Food: {food}")
 
             # Debug information displayed at score window
-            score.addstr(1, int(self.screenWidth/3), f"Max Y {self.screenHeigth-1}, current head position:  {snake[0][0]}")
-            score.addstr(2, int(self.screenWidth/3), f"Max X {self.screenWidth-1}, current head position:  {snake[0][1]}")
+            score.addstr(1, int(self.screenWidth/3), f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}")
+            score.addstr(2, int(self.screenWidth/3), f"DEBUG: Width: {self.screenWidth-1}, Time: {round(time()-self.startTime,2)}")
             scoreUpdate = score.refresh()
 
             # Updating the timeout value
@@ -141,8 +142,8 @@ class SnakeGame():
 
                 while food is None:
                     newFood = [
-                        random.randint(2,self.screenHeigth-2),
-                        random.randint(2,self.screenWidth-2)
+                        int(random.randint(2,self.screenHeigth-2)),
+                        int(random.randint(2,self.screenWidth-2))
                     ]
 
                     if newFood not in snake[0]:
@@ -156,8 +157,8 @@ class SnakeGame():
                 if self.points % 5 == 0:
                     self.speed -= 1
 
-                # Debugging
-                print(f"DEBUG: Food eaten ({self.points}) @ {snake[0]}, Time: {round(time()-self.startTime,2)}\n")
+                # Debugging (this method worked on windows but not on linux)
+                #print(f"DEBUG: Food eaten ({self.points}) @ {snake[0]}, Time: {round(time()-self.startTime,2)}")
 
             else:
                 # Getting rid of the tail bits
@@ -167,10 +168,10 @@ class SnakeGame():
             # Bring the snake alive
             game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET)
 
-            # Debugging
-            print(f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}, Time: {round(time()-self.startTime,2)}\n")
+            # Debugging (this method worked on windows but not on linux)
+            #print(f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}, Time: {round(time()-self.startTime,2)}")
 
-snake = SnakeGame(20,100,100)
+snake = SnakeGame(20,75,100)
 
 try:
     curses.wrapper(snake.game)
