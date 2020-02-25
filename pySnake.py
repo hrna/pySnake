@@ -151,9 +151,10 @@ class SnakeGame():
                         food = None
                 game.addch(int(food[0]),int(food[1]), "o")
 
-                # Get yourself a meal, add a point and lower the timout value for higher speed.
+                # Get yourself a meal, add a point and lower the timout value for higher speed after every 5th food.
                 self.points += 1
-                self.speed -= 1
+                if self.points % 5 == 0:
+                    self.speed -= 1
 
                 # Debugging
                 print(f"DEBUG: Food eaten ({self.points}) @ {snake[0]}, Time: {round(time()-self.startTime,2)}\n")
@@ -167,7 +168,7 @@ class SnakeGame():
             game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET)
 
             # Debugging
-            print(f"DEBUG: Pos: {snake[0]}, Time: {round(time()-self.startTime,2)}\n")
+            print(f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}, Time: {round(time()-self.startTime,2)}\n")
 
 snake = SnakeGame(20,100,100)
 
