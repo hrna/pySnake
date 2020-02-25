@@ -153,7 +153,10 @@ class SnakeGame():
 
                 # Get yourself a meal, add a point and lower the timout value for higher speed.
                 self.points += 1
-                self.speed -= 5
+                self.speed -= 1
+
+                # Debugging
+                print(f"DEBUG: Food eaten ({self.points}) @ {snake[0]}, Time: {round(time()-self.startTime,2)}\n")
 
             else:
                 # Getting rid of the tail bits
@@ -161,7 +164,10 @@ class SnakeGame():
                 game.addch(int(tail[0]),int(tail[1]), " ")
 
             # Bring the snake alive
-            game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET) 
+            game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET)
+
+            # Debugging
+            print(f"DEBUG: Pos: {snake[0]}, Time: {round(time()-self.startTime,2)}\n")
 
 snake = SnakeGame(20,100,100)
 
@@ -169,4 +175,3 @@ try:
     curses.wrapper(snake.game)
 except Exception as e:
     print(traceback.format_exc())
-
