@@ -135,6 +135,8 @@ class SnakeGame():
             # Inserting a new block towards the direction of movement.
             snake.insert(0, movement)
 
+
+            # -------------------------------------------------------------------
             # Check if food is consumed, if not pop the tail out.
             # IF consumed, create a new treat and let the snake grow
             if snake[0] == food:
@@ -164,6 +166,8 @@ class SnakeGame():
                 # Getting rid of the tail bits
                 tail = snake.pop()
                 game.addch(int(tail[0]),int(tail[1]), " ")
+            # -------------------------------------------------------------------
+
 
             # Bring the snake alive
             game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET)
