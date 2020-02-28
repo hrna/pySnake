@@ -20,6 +20,7 @@ class SnakeGame():
         self.speed = speed
         self.points = 0
         self.startTime = time()
+        self.snake = []
 
 
     def endGame(self, message, debug = None):
@@ -29,6 +30,28 @@ class SnakeGame():
         
         if debug != None:
             print(debug)
+
+    def processFood(self):
+        # Create a new treat for snake
+
+        foodTypes = ["o", "O","@"]
+        insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
+
+        food = None
+        while food is None:
+
+            newFood = [
+                int(random.randint(2,self.screenHeigth-2)),
+                int(random.randint(2,self.screenWidth-2)),
+                insertFood
+                ]
+
+            if newFood not in self.snake[0]:
+                print("NEW FOOD CREATED")
+                food = newFood
+                return food
+            else:
+                food = None
 
     def game(self, screen):
 
@@ -62,7 +85,7 @@ class SnakeGame():
 
         # Creating a list holding the snake
         # Giving the snake 3 blocks, snake[0][0] will always be the snake head and the rest will come behind.
-        snake = [
+        self.snake = [
             [y_position, x_position],
             [y_position, x_position - 1],
             [y_position, x_position - 2]
@@ -89,7 +112,7 @@ class SnakeGame():
             score.addstr(2,1,f"Next Food: {food}")
 
             # Debug information displayed at score window
-            score.addstr(1, int(self.screenWidth/3), f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}")
+            score.addstr(1, int(self.screenWidth/3), f"DEBUG: Pos: {self.snake[0]}, Speed: {self.speed}")
             score.addstr(2, int(self.screenWidth/3), f"DEBUG: Width: {self.screenWidth-1}, Time: {round(time()-self.startTime,2)}")
             scoreUpdate = score.refresh()
 
@@ -107,18 +130,18 @@ class SnakeGame():
             
             # If snake is out of bounds in Y / X axis or snake is in itself, quit
             # snake[0][0] = Y, snake[0][1] = X
-            if snake[0][0] in [0, self.screenHeigth-1] or snake[0][1] in [0, self.screenWidth-1]:
+            if self.snake[0][0] in [0, self.screenHeigth-1] or self.snake[0][1] in [0, self.screenWidth-1]:
                 curses.endwin()
-                self.endGame("Snake hit the wall!", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}, speed: {self.speed}")
+                self.endGame("Snake hit the wall!", f"DEBUG: y: {self.snake[0][0]}, x: {self.snake[0][1]}, speed: {self.speed}")
                 break
-            elif snake[0] in snake[1:]:
+            elif self.snake[0] in self.snake[1:]:
                 curses.endwin()
-                self.endGame("Cannibalism is not good.", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}, speed: {self.speed}")
+                self.endGame("Cannibalism is not good.", f"DEBUG: y: {self.snake[0][0]}, x: {self.snake[0][1]}, speed: {self.speed}")
                 break
 
             # Add a block towards new direction
             # movement [Y,X]
-            movement = [snake[0][0],snake[0][1]]
+            movement = [self.snake[0][0],self.snake[0][1]]
 
             # If moving up or down direction, we are manipulating Y axis.
             if key == curses.KEY_DOWN:
@@ -133,44 +156,29 @@ class SnakeGame():
                 movement[1] += 1
             
             # Inserting a new block towards the direction of movement.
-            snake.insert(0, movement)
+            self.snake.insert(0, movement)
 
 
-            # -------------------------------------------------------------------
             # Check if food is consumed, if not pop the tail out.
             # IF consumed, create a new treat and let the snake grow
-            if snake[0] == food:
-                food = None
+            if self.snake[0] == food:
+                print("ATE")
+                food = self.processFood()
+                game.addch(int(food[0]),int(food[1]), food[2])
 
-                while food is None:
-                    newFood = [
-                        int(random.randint(2,self.screenHeigth-2)),
-                        int(random.randint(2,self.screenWidth-2))
-                    ]
-
-                    if newFood not in snake[0]:
-                        food = newFood
-                    else:
-                        food = None
-                game.addch(int(food[0]),int(food[1]), "o")
-
-                # Get yourself a meal, add a point and lower the timout value for higher speed after every 5th food.
+               # Get yourself a meal, add a point and lower the timout value for higher speed after every 5th food.
                 self.points += 1
                 if self.points % 5 == 0:
                     self.speed -= 1
-
-                # Debugging (this method worked on windows but not on linux)
-                #print(f"DEBUG: Food eaten ({self.points}) @ {snake[0]}, Time: {round(time()-self.startTime,2)}")
-
             else:
                 # Getting rid of the tail bits
-                tail = snake.pop()
+                tail = self.snake.pop()
                 game.addch(int(tail[0]),int(tail[1]), " ")
-            # -------------------------------------------------------------------
+
 
 
             # Bring the snake alive
-            game.addch(int(snake[0][0]),int(snake[0][1]), curses.ACS_BULLET)
+            game.addch(int(self.snake[0][0]),int(self.snake[0][1]), curses.ACS_BULLET)
 
             # Debugging (this method worked on windows but not on linux)
             #print(f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}, Time: {round(time()-self.startTime,2)}")
