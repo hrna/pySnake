@@ -109,11 +109,11 @@ class SnakeGame():
             # snake[0][0] = Y, snake[0][1] = X
             if snake[0][0] in [0, self.screenHeigth-1] or snake[0][1] in [0, self.screenWidth-1]:
                 curses.endwin()
-                self.endGame("Snake hit the wall!", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}")
+                self.endGame("Snake hit the wall!", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}, speed: {self.speed}")
                 break
             elif snake[0] in snake[1:]:
                 curses.endwin()
-                self.endGame("Cannibalism is not good.", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}")
+                self.endGame("Cannibalism is not good.", f"DEBUG: y: {snake[0][0]}, x: {snake[0][1]}, speed: {self.speed}")
                 break
 
             # Add a block towards new direction
