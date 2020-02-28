@@ -36,10 +36,10 @@ class SnakeGame():
 
         foodTypes = ["o", "O","@"]
         insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
-
+        
         food = None
         while food is None:
-
+           
             newFood = [
                 int(random.randint(2,self.screenHeigth-2)),
                 int(random.randint(2,self.screenWidth-2)),
@@ -47,11 +47,10 @@ class SnakeGame():
                 ]
 
             if newFood not in self.snake[0]:
-                print("NEW FOOD CREATED")
                 food = newFood
-                return food
             else:
                 food = None
+        return food
 
     def game(self, screen):
 
@@ -161,10 +160,11 @@ class SnakeGame():
 
             # Check if food is consumed, if not pop the tail out.
             # IF consumed, create a new treat and let the snake grow
-            if self.snake[0] == food:
-                print("ATE")
+            
+            if self.snake[0][:] == food:
+                food = None
                 food = self.processFood()
-                game.addch(int(food[0]),int(food[1]), food[2])
+                game.addch(int(food[0]),int(food[1]), "o")
 
                # Get yourself a meal, add a point and lower the timout value for higher speed after every 5th food.
                 self.points += 1
@@ -174,9 +174,7 @@ class SnakeGame():
                 # Getting rid of the tail bits
                 tail = self.snake.pop()
                 game.addch(int(tail[0]),int(tail[1]), " ")
-
-
-
+               
             # Bring the snake alive
             game.addch(int(self.snake[0][0]),int(self.snake[0][1]), curses.ACS_BULLET)
 
