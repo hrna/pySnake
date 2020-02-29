@@ -4,11 +4,6 @@ import traceback
 from time import time
 
 class SnakeGame():
-
-    # TODO: Different kinds of foods with a different point value.
-    # TODO: A big junk of food slows down the speed where smaller junks makes snake faster.
-    # TODO: Timed junks of food, maybe even two junks at the same time.
-
     '''Input game area size as parameters, screen height comes first and then width
     3rd arg is for the speed. Lower the number, faster the snake is'''
 
@@ -32,18 +27,13 @@ class SnakeGame():
             print(debug)
 
     def processFood(self):
-        # Create a new treat for snake
-
-        foodTypes = ["o", "O","@"]
-        insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
-        
+        # Create a new treat for snake        
         food = None
         while food is None:
            
             newFood = [
                 int(random.randint(2,self.screenHeigth-2)),
-                int(random.randint(2,self.screenWidth-2)),
-                insertFood
+                int(random.randint(2,self.screenWidth-2))              
                 ]
 
             if newFood not in self.snake[0]:
@@ -91,8 +81,10 @@ class SnakeGame():
         ]
 
         # Creating the first food in the scene and paint it to canvas.
+        foodTypes = ["o", "O","@"]
+        insertFood = foodTypes[0]
         food = [int(self.screenHeigth / 2), int(self.screenWidth / 2)]
-        game.addch(int(food[0]), int(food[1]), "o")
+        game.addch(int(food[0]), int(food[1]), insertFood)
 
         # Set the default starting direction
         key = curses.KEY_RIGHT
@@ -159,17 +151,28 @@ class SnakeGame():
 
 
             # Check if food is consumed, if not pop the tail out.
-            # IF consumed, create a new treat and let the snake grow
-            
-            if self.snake[0][:] == food:
-                food = None
-                food = self.processFood()
-                game.addch(int(food[0]),int(food[1]), "o")
+            # IF consumed, create a new treat and let the snake grow          
+            if self.snake[0] == food: 
 
-               # Get yourself a meal, add a point and lower the timout value for higher speed after every 5th food.
-                self.points += 1
-                if self.points % 5 == 0:
-                    self.speed -= 1
+                # Get yourself a meal, add a point
+                if insertFood == foodTypes[0]:
+                    self.points += 1     
+
+                # Bigger the meal is, slower the snake gets                 
+                elif insertFood == foodTypes[1]:
+                    self.points += 3
+                    self.speed += 1
+
+                elif insertFood == foodTypes[2]:
+                    self.points += 5
+                    self.speed += 2
+
+                # Lower the timout value for higher speed after every food.
+                self.speed -= 1
+
+                insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
+                food = self.processFood()
+                game.addch(int(food[0]),int(food[1]),insertFood)
             else:
                 # Getting rid of the tail bits
                 tail = self.snake.pop()
