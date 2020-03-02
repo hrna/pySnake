@@ -36,7 +36,7 @@ class SnakeGame():
                 int(random.randint(2,self.screenWidth-2))              
                 ]
 
-            if newFood not in self.snake[0]:
+            if newFood not in self.snake:
                 food = newFood
             else:
                 food = None
@@ -152,7 +152,7 @@ class SnakeGame():
 
             # Check if food is consumed, if not pop the tail out.
             # IF consumed, create a new treat and let the snake grow          
-            if self.snake[0] == food: 
+            if food in self.snake: 
 
                 # Get yourself a meal, add a point
                 if insertFood == foodTypes[0]:
@@ -180,9 +180,6 @@ class SnakeGame():
                
             # Bring the snake alive
             game.addch(int(self.snake[0][0]),int(self.snake[0][1]), curses.ACS_BULLET)
-
-            # Debugging (this method worked on windows but not on linux)
-            #print(f"DEBUG: Pos: {snake[0]}, Speed: {self.speed}, Time: {round(time()-self.startTime,2)}")
 
 snake = SnakeGame(20,75,100)
 
