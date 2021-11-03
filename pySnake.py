@@ -58,7 +58,15 @@ class SnakeGame():
         s = curses.initscr()
         s.clear()
         curses.curs_set(0)
-
+        
+        # Get screen max values for screen size checkup
+        # Quit game if window size is too small
+        sh, sw = s.getmaxyx()
+        if sh < self.screenHeigth or sw < self.screenWidth:
+            print("Windows size too small")
+            print("Try resizing the window and try again")
+            return False
+            
         # Create a game main window with borders
         game = curses.newwin(self.screenHeigth, self.screenWidth, 0, 0)
         game.border()
@@ -66,9 +74,7 @@ class SnakeGame():
         # Create a window for scores
         score = curses.newwin(4, self.screenWidth, self.screenHeigth, 0)
         score.border()
-
-        #get screen max values for screen size checkup
-        sh, sw = s.getmaxyx()
+          
    
         # Activate keypad/arrow keys
         game.keypad(True)
@@ -213,7 +219,7 @@ class SnakeGame():
             game.addch(int(self.snake[0][0]),int(self.snake[0][1]), curses.ACS_BULLET)
             
 
-snake = SnakeGame(20,75,100)
+snake = SnakeGame(40,100,100)
 
 try:
     curses.wrapper(snake.game)
