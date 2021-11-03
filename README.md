@@ -12,3 +12,6 @@ A simple snake game made with python 3 and curses
   * **O**   :bit bigger piece of food worth of 3 points, the snake speed is not increasing
   * **@**  :The biggest piece of food worth of 5 points and the snake slows down a step
 
+* An obstacle is displayed as **#**
+  * Hitting any of the obstacles will result game over.
+
