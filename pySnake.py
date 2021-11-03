@@ -41,6 +41,16 @@ class SnakeGame():
             else:
                 food = None
         return food
+       
+    def placeWall(self):
+        wall = None
+        while wall is None:
+            
+            newWall = [int(random.randint(2,self.screenHeigth-2)),int(random.randint(2,self.screenWidth-2))]
+            if newWall not in self.snake:
+                wall = newWall
+        return wall
+
 
     def game(self, screen):
 
@@ -85,6 +95,12 @@ class SnakeGame():
         insertFood = foodTypes[0]
         food = [int(self.screenHeigth / 2), int(self.screenWidth / 2)]
         game.addch(int(food[0]), int(food[1]), insertFood)
+        
+        # Iinitialize wall
+        wall = self.placeWall()
+        obstacle = [wall]
+        game.addch(int(wall[0]),int(wall[1]), "#")
+        hitObstacle = False
 
         # Set the default starting direction
         key = curses.KEY_RIGHT
@@ -118,7 +134,14 @@ class SnakeGame():
                 key = update
             else:
                 key = key
-            
+                
+            # Check if hit the wall obstacle
+            for obs in obstacle:
+                if obs in self.snake:
+                    hitObstacle = True
+                    self.endGame("You hit an obstacle, GAME OVER!", f"DEBUG: y: {self.snake[0][0]}, x: {self.snake[0][1]}, speed: {self.speed}")   
+                    break
+                    
             # If snake is out of bounds in Y / X axis or snake is in itself, quit
             # snake[0][0] = Y, snake[0][1] = X
             if self.snake[0][0] in [0, self.screenHeigth-1] or self.snake[0][1] in [0, self.screenWidth-1]:
@@ -129,7 +152,8 @@ class SnakeGame():
                 curses.endwin()
                 self.endGame("Cannibalism is not good.", f"DEBUG: y: {self.snake[0][0]}, x: {self.snake[0][1]}, speed: {self.speed}")
                 break
-
+            elif hitObstacle:
+                break
             # Add a block towards new direction
             # movement [Y,X]
             movement = [self.snake[0][0],self.snake[0][1]]
@@ -147,8 +171,7 @@ class SnakeGame():
                 movement[1] += 1
             
             # Inserting a new block towards the direction of movement.
-            self.snake.insert(0, movement)
-
+            self.snake.insert(0, movement)                    
 
             # Check if food is consumed, if not pop the tail out.
             # IF consumed, create a new treat and let the snake grow          
@@ -172,7 +195,13 @@ class SnakeGame():
 
                 insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
                 food = self.processFood()
+                wall = self.placeWall()
+                obstacle.append(wall)
                 game.addch(int(food[0]),int(food[1]),insertFood)
+                
+                # place a piece of wall
+                game.addch(int(wall[0]),int(wall[1]), "#")
+                
             else:
                 # Getting rid of the tail bits
                 tail = self.snake.pop()
@@ -180,10 +209,15 @@ class SnakeGame():
                
             # Bring the snake alive
             game.addch(int(self.snake[0][0]),int(self.snake[0][1]), curses.ACS_BULLET)
+            
 
 snake = SnakeGame(20,75,100)
 
 try:
     curses.wrapper(snake.game)
+
 except Exception as e:
     print(traceback.format_exc())
+    wait = input("Press any key to quit")
+    print("Quitting")
+    
