@@ -42,12 +42,12 @@ class SnakeGame():
                 food = None
         return food
        
-    def placeWall(self):
+    def placeWall(self, food):
         wall = None
         while wall is None:
             
             newWall = [int(random.randint(2,self.screenHeigth-2)),int(random.randint(2,self.screenWidth-2))]
-            if newWall not in self.snake:
+            if newWall not in self.snake and newWall not in food:
                 wall = newWall
         return wall
 
@@ -97,7 +97,7 @@ class SnakeGame():
         game.addch(int(food[0]), int(food[1]), insertFood)
         
         # Iinitialize wall
-        wall = self.placeWall()
+        wall = self.placeWall(food)
         obstacle = [wall]
         game.addch(int(wall[0]),int(wall[1]), "#")
         hitObstacle = False
@@ -195,8 +195,10 @@ class SnakeGame():
 
                 insertFood = foodTypes[random.randint(0,len(foodTypes)-1)]
                 food = self.processFood()
-                wall = self.placeWall()
+                wall = self.placeWall(food)
                 obstacle.append(wall)
+                
+                #place food
                 game.addch(int(food[0]),int(food[1]),insertFood)
                 
                 # place a piece of wall
